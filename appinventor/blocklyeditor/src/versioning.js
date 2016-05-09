@@ -1393,7 +1393,10 @@ Blockly.Versioning.AllUpgradeMaps =
 
     1: "noUpgrade",
     // AI2 Added AppendValue, RemoveFirst and FirstRemoved
-    2: "noUpgrade"
+    2: "noUpgrade",
+    // AI2 Added ClearTag function
+    3: "noUpgrade"
+
   },
 
   "FusiontablesControl": {

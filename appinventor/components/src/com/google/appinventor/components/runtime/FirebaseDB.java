@@ -37,6 +37,8 @@ import com.google.appinventor.components.runtime.util.SdkLevel;
 import com.google.appinventor.components.runtime.util.YailList;
 
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONException;
@@ -171,13 +173,18 @@ public class FirebaseDB extends AndroidNonvisibleComponent implements Component 
 
       @Override
       public void onChildRemoved(final DataSnapshot snapshot) {
-        androidUIHandler.post(new Runnable() {
-          public void run() {
-            // Signal an event to indicate that the child data was changed.
-            // We post this to run in the Application's main UI thread.
-            DataChanged(snapshot.getKey(), null);
-          }
-        });
+        Log.i(LOG_TAG, "onChildRemoved: " + snapshot.getKey() + " removed.");
+        // We do *NOT* run the code below because triggering an event
+        // with a null argument causes problems in App Inventor programs
+        // If people need to know when a child is removed, we should add
+        // a new event which only takes the tag as a parameter
+        // androidUIHandler.post(new Runnable() {
+        //   public void run() {
+        //     // Signal an event to indicate that the child data was changed.
+        //     // We post this to run in the Application's main UI thread.
+        //     DataChanged(snapshot.getKey(), null);
+        //   }
+        // });
       }
     };
 
@@ -363,6 +370,17 @@ public class FirebaseDB extends AndroidNonvisibleComponent implements Component 
 
      https://www.firebase.com/docs/java-api/javadoc/com/firebase/client/Firebase.html#runTransaction-com.firebase.client.Transaction.Handler-
    */
+
+  /**
+   * Asks Firebase to forget (delete or set to "null") a given tag.
+   *
+   * @param tag The tag to remove
+   */
+
+  @SimpleFunction(description = "Remove the tag from Firebase")
+  public void ClearTag(final String tag) {
+    this.myFirebase.child(tag).removeValue();
+  }
 
   /**
    * Asks Firebase to store the given value under the given tag.
@@ -614,6 +632,39 @@ public class FirebaseDB extends AndroidNonvisibleComponent implements Component 
           FirstRemoved(result.getRetval());
         }
       });
+  }
+
+  @SimpleFunction(description = "Get the list of tags for this application. " +
+    "When complete a \"TagList\" event will be triggered with the list of " +
+    "known tags.")
+  public void GetTagList() {
+    Firebase zFireBase = myFirebase.child(""); // Does this really clone the parent?
+    zFireBase.addListenerForSingleValueEvent(new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot data) {
+          Object value = data.getValue();
+          if (value instanceof HashMap) {
+            value = new ArrayList(((HashMap)value).keySet());
+            final List listValue = (List) value;
+            androidUIHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                  TagList(listValue);
+                }
+              });
+          }
+        }
+        @Override
+        public void onCancelled(FirebaseError error) {
+          // Do Nothing
+        }
+      });
+  }
+
+  @SimpleEvent(description = "Event triggered when we have received the list of known tags. " +
+    "Used with the \"GetTagList\" Function.")
+  public void TagList(List value) {
+    EventDispatcher.dispatchEvent(this, "TagList", value);
   }
 
   @SimpleEvent(description = "Event triggered by the \"RemoveFirst\" function. The " +

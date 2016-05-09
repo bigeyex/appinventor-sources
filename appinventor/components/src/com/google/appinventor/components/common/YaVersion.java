@@ -391,8 +391,10 @@ public class YaVersion {
   // - Extensions Support (non-visible only) added
   // For YOUNG_ANDROID_VERSION 156:
   // - BLUETOOTHLE_COMPONENT_VERSION is 1
+  // For YOUNG_ANDROID_VERSION 157:
+  // - FIREBASE_COMPONENT_VERSION was incremented to 3
 
-  public static final int YOUNG_ANDROID_VERSION = 156;
+  public static final int YOUNG_ANDROID_VERSION = 157;
 
   // ............................... Blocks Language Version Number ...............................
 
@@ -948,7 +950,9 @@ public class YaVersion {
   // For FIREBASE_COMPONENT_VERSION 2:
   // - The AppendValue and RemoveFirst functions along
   //   with the FirstRemoved event were added
-  public static final int FIREBASE_COMPONENT_VERSION = 2;
+  // For FIREBASE_COMPONENT_VERSION 3:
+  // - Added the ClearTag function
+  public static final int FIREBASE_COMPONENT_VERSION = 3;
 
   // For TWITTER_COMPONENT_VERSION 2:
   // - The Authorize method and IsAuthorized event handler were added to support
