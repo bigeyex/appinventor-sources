@@ -3,23 +3,13 @@
 // Released under the Apache License, Version 2.0
 // http://www.apache.org/licenses/LICENSE-2.0
 
-package com.google.appinventor.components.runtime;
-
-import android.os.Handler;
+package com.makeblock.appinventor;
 
 import com.google.appinventor.components.annotations.DesignerComponent;
-import com.google.appinventor.components.annotations.DesignerProperty;
-import com.google.appinventor.components.annotations.PropertyCategory;
-import com.google.appinventor.components.annotations.SimpleEvent;
 import com.google.appinventor.components.annotations.SimpleFunction;
 import com.google.appinventor.components.annotations.SimpleObject;
-import com.google.appinventor.components.annotations.SimpleProperty;
 import com.google.appinventor.components.common.ComponentCategory;
-import com.google.appinventor.components.common.PropertyTypeConstants;
-import com.google.appinventor.components.common.YaVersion;
-import com.google.appinventor.components.runtime.util.ErrorMessages;
-import com.google.appinventor.components.runtime.util.Ev3BinaryParser;
-import com.google.appinventor.components.runtime.util.Ev3Constants;
+import com.google.appinventor.components.runtime.*;
 
 import java.io.IOException;
 
@@ -34,9 +24,9 @@ import java.io.IOException;
                    description = "Component to control Makeblock mBot educational robot.",
                    category = ComponentCategory.EXTENSION,
                    nonVisible = true,
-                   iconName = "images/legoMindstormsEv3.png")
+                   iconName = "http://appinventor.makeblock.com/mbot-icon.png")
 @SimpleObject(external = true)
-public class MBot extends MakeblockMBotBase {
+public class MBot extends MBotBase {
   /**
    * Creates a new Ev3Motors component.
    */
@@ -100,9 +90,4 @@ public class MBot extends MakeblockMBotBase {
     return lightnessSensorValue("LightnessSensorValue");
   }
 
-  @Override
-  public void beforeDisconnect(BluetoothConnectionBase bluetoothConnection) {
-    String functionName = "beforeDisconnect";
-
-  }
 }

@@ -3,23 +3,23 @@
 // Released under the Apache License, Version 2.0
 // http://www.apache.org/licenses/LICENSE-2.0
 
-package com.google.appinventor.components.runtime;
+package com.makeblock.appinventor;
 
 import android.util.Log;
 
-import com.google.appinventor.components.annotations.DesignerProperty;
-import com.google.appinventor.components.annotations.PropertyCategory;
-import com.google.appinventor.components.annotations.SimpleObject;
-import com.google.appinventor.components.annotations.SimpleProperty;
-import com.google.appinventor.components.common.PropertyTypeConstants;
-import com.google.appinventor.components.runtime.util.ErrorMessages;
-import com.google.appinventor.components.runtime.util.Ev3BinaryParser;
+import com.google.appinventor.components.annotations.SimpleFunction;
+import com.google.appinventor.components.annotations.UsesPermissions;
 
+import com.google.appinventor.components.annotations.SimpleObject;
+import com.google.appinventor.components.runtime.AndroidNonvisibleComponent;
+import com.google.appinventor.components.runtime.Component;
+import com.google.appinventor.components.runtime.ComponentContainer;
+import com.google.appinventor.components.runtime.Deleteable;
+import com.google.appinventor.components.runtime.util.ErrorMessages;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Collections;
+import java.util.List;
 
 /**
  * @author bigeyex@gmail.com (Wang Yu)
@@ -30,8 +30,11 @@ import java.util.Collections;
  * @author spaded06543@gmail.com (Alvin Chang)
  */
 @SimpleObject
-public class MakeblockMBotBase extends AndroidNonvisibleComponent
-  implements BluetoothConnectionListener, Component, Deleteable {
+@UsesPermissions(permissionNames =
+        "android.permission.BLUETOOTH, " +
+        "android.permission.BLUETOOTH_ADMIN")
+public class MBotBase extends AndroidNonvisibleComponent
+  implements Component, Deleteable {
 
   private static final int MBOT_ROBOT = 0x0904;
   private static final byte PREFIX_A = (byte)0xff;
@@ -78,45 +81,34 @@ public class MakeblockMBotBase extends AndroidNonvisibleComponent
 
 
   protected final String logTag;
-  protected BluetoothClient bluetooth;
+  protected MBotBluetoothClient bluetooth;
 
   private int readIndex = MIN_READ_INDEX;
 
-  protected MakeblockMBotBase(ComponentContainer container, String logTag) {
+  protected MBotBase(ComponentContainer container, String logTag) {
     super(container.$form());
+    bluetooth = new MBotBluetoothClient(container);
     this.logTag = logTag;
   }
 
-  protected MakeblockMBotBase() {
+  protected MBotBase() {
     super(null);
     logTag = null;
   }
 
-  @SimpleProperty(description = "The BluetoothClient component that should be used for communication.",
-                  category = PropertyCategory.BEHAVIOR)
-  public BluetoothClient BluetoothClient() {
-    return bluetooth;
+//  @SimpleFunction(description = "connect mBot by picking from a list of bluetooth devices.")
+  public void ConnectUsingBluetooth(){
+    bluetooth.openSelectDeviceDialog();
   }
 
-  @DesignerProperty(editorType = PropertyTypeConstants.PROPERTY_TYPE_BLUETOOTHCLIENT,
-                    defaultValue = "")
-  @SimpleProperty
-  public void BluetoothClient(BluetoothClient bluetoothClient) {
-    if (bluetooth != null) {
-      bluetooth.removeBluetoothConnectionListener(this);
-      bluetooth.detachComponent(this);
-      bluetooth = null;
-    }
+  @SimpleFunction(description = "get addresses and names of bluetooth devices.")
+  public List<String> AvailableRobots() {
+    return bluetooth.addresses();
+  }
 
-    if (bluetoothClient != null) {
-      bluetooth = bluetoothClient;
-      bluetooth.attachComponent(this, Collections.singleton(MBOT_ROBOT));
-      bluetooth.addBluetoothConnectionListener(this);
-      if (bluetooth.IsConnected()) {
-        // We missed the real afterConnect event.
-        afterConnect(bluetooth);
-      }
-    }
+  @SimpleFunction(description = "connect to a mBot through bluetooth.")
+  public void ConnectToRobot(String address){
+    bluetooth.connect(address);
   }
 
   protected final boolean isBluetoothConnected(String functionName) {
@@ -138,8 +130,8 @@ public class MakeblockMBotBase extends AndroidNonvisibleComponent
     if (!isBluetoothConnected(functionName))
       return null;
 
-    bluetooth.write(functionName, command);
-    return bluetooth.read(functionName, replyBytes);
+    bluetooth.write(command);
+    return bluetooth.read(replyBytes);
   }
 
   protected final void sendWriteCommand(String functionName, int deviceType, byte[] commandContent) {
@@ -153,8 +145,8 @@ public class MakeblockMBotBase extends AndroidNonvisibleComponent
     System.arraycopy(header, 0, bytesToWrite, 0, header.length);
     System.arraycopy(commandContent, 0, bytesToWrite, header.length, commandContent.length);
 
-    bluetooth.write(functionName, bytesToWrite);
-    bluetooth.read(functionName, LENGTH_WRITE_REPLY);
+    bluetooth.write(bytesToWrite);
+    bluetooth.read(LENGTH_WRITE_REPLY);
   }
 
   protected final byte[] readSensor(String functionName, int deviceType, byte[] commandContent, int replyLength) throws IOException {
@@ -180,8 +172,8 @@ public class MakeblockMBotBase extends AndroidNonvisibleComponent
     System.arraycopy(commandContent, 0, bytesToWrite, header.length, commandContent.length);
 
     Log.w("mbot", "send" + byteArrayToHex(bytesToWrite));
-    bluetooth.write(functionName, bytesToWrite);
-    return bluetooth.read(functionName, replyLength);
+    bluetooth.write(bytesToWrite);
+    return bluetooth.read(replyLength);
   }
 
   private final float extractFloat(byte[] replyBytes){
@@ -231,24 +223,10 @@ public class MakeblockMBotBase extends AndroidNonvisibleComponent
     return sb.toString();
   }
 
-
-
-  @Override
-  public void afterConnect(BluetoothConnectionBase bluetoothConnection) {
-    // Subclasses may wish to do something.
-  }
-
-  @Override
-  public void beforeDisconnect(BluetoothConnectionBase bluetoothConnection) {
-    // Subclasses may wish to do something.
-  }
-
   // interface Deleteable implementation
   @Override
   public void onDelete() {
     if (bluetooth != null) {
-      bluetooth.removeBluetoothConnectionListener(this);
-      bluetooth.detachComponent(this);
       bluetooth = null;
     }
   }
