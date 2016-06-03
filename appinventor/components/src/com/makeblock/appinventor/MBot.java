@@ -36,25 +36,25 @@ public class MBot extends MBotBase {
 
   @SimpleFunction(description = "tell mBot to move forward")
   public void MoveForward(int speed) {
-    setMotorSpeed("MoveForward", PORT_LEFT_MOTOR, speed);
+    setMotorSpeed("MoveForward", PORT_LEFT_MOTOR, -speed);
     setMotorSpeed("MoveForward", PORT_RIGHT_MOTOR, speed);
   }
 
   @SimpleFunction(description = "tell mBot to move backward")
   public void MoveBackward(int speed) {
-    setMotorSpeed("MoveBackward", PORT_LEFT_MOTOR, -speed);
+    setMotorSpeed("MoveBackward", PORT_LEFT_MOTOR, speed);
     setMotorSpeed("MoveBackward", PORT_RIGHT_MOTOR, -speed);
   }
 
   @SimpleFunction(description = "tell mBot to turn left")
   public void TurnLeft(int speed) {
-    setMotorSpeed("TurnLeft", PORT_LEFT_MOTOR, -speed);
+    setMotorSpeed("TurnLeft", PORT_LEFT_MOTOR, speed);
     setMotorSpeed("TurnLeft", PORT_RIGHT_MOTOR, speed);
   }
 
   @SimpleFunction(description = "tell mBot to turn right")
   public void TurnRight(int speed) {
-    setMotorSpeed("TurnRight", PORT_LEFT_MOTOR, speed);
+    setMotorSpeed("TurnRight", PORT_LEFT_MOTOR, -speed);
     setMotorSpeed("TurnRight", PORT_RIGHT_MOTOR, -speed);
   }
 
@@ -88,6 +88,11 @@ public class MBot extends MBotBase {
   @SimpleFunction(description = "get lightness sensor value")
   public float LightnessSensorValue() throws IOException{
     return lightnessSensorValue("LightnessSensorValue");
+  }
+
+  @SimpleFunction(description = "get linefollower value")
+  public int LineFollowerValue(int port) throws IOException{
+    return LineFollowerValue(port);
   }
 
 }

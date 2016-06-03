@@ -145,6 +145,7 @@ public class MBotBase extends AndroidNonvisibleComponent
     System.arraycopy(header, 0, bytesToWrite, 0, header.length);
     System.arraycopy(commandContent, 0, bytesToWrite, header.length, commandContent.length);
 
+    Log.w("mbot", "send" + byteArrayToHex(bytesToWrite));
     bluetooth.write(bytesToWrite);
     bluetooth.read(LENGTH_WRITE_REPLY);
   }
@@ -184,7 +185,9 @@ public class MBotBase extends AndroidNonvisibleComponent
   }
 
   protected final void setMotorSpeed(String functionName, int port, int speed) {
-    sendWriteCommand(functionName, DEVICE_DCMOTOR, new byte[]{(byte)port, (byte)speed});
+    byte speedHigh = (byte)((speed >> 8) & 0xff);
+    byte speedLow = (byte)(speed & 0xff);
+    sendWriteCommand(functionName, DEVICE_DCMOTOR, new byte[]{(byte)port, (byte)speedLow, (byte)speedHigh});
   }
 
   protected final void setRGBLED(String functionName, int index, int red, int green, int blue) {
@@ -213,6 +216,12 @@ public class MBotBase extends AndroidNonvisibleComponent
   protected final float loudnessSensorValue(String functionName, int port) throws IOException{
     return extractFloat(readSensor(functionName, DEVICE_LOUDNESS,
             new byte[]{(byte)PORT_ONBOARD_LOUDNESS_SENSOR}, REPLY_LENGTH_FLOAT));
+  }
+
+  protected final int lineFollowerStatus(String functionName, int port) throws IOException{
+    float result =  extractFloat(readSensor(functionName, DEVICE_LINE_FOLLOWER,
+            new byte[]{(byte)port}, REPLY_LENGTH_FLOAT));
+    return (int)result;
   }
 
 
