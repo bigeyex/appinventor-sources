@@ -1,4 +1,4 @@
-package com.google.appinventor.components.runtime.Bluetooth;
+package com.makeblock.appinventor;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;

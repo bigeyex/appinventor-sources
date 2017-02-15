@@ -1,4 +1,4 @@
-package com.google.appinventor.components.runtime.Bluetooth;
+package com.makeblock.appinventor;
 
 import java.util.ArrayList;
 import java.util.List;

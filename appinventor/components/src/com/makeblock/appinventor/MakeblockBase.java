@@ -13,17 +13,9 @@ import com.google.appinventor.components.runtime.Component;
 import com.google.appinventor.components.runtime.ComponentContainer;
 import com.google.appinventor.components.runtime.Deleteable;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
-import com.makeblock.appinventor.Bluetooth.BluetoothAdapter_BLE;
-import com.makeblock.appinventor.Bluetooth.BluetoothFlowValve;
-import com.makeblock.appinventor.Bluetooth.bluetoothManager;
-import com.makeblock.appinventor.Bluetooth.Command;
-import com.makeblock.appinventor.Bluetooth.DeviceBean;
-import com.makeblock.appinventor.Bluetooth.PackDataHelper;
-import com.makeblock.appinventor.Bluetooth.SearchEvent;
-import com.makeblock.appinventor.Bluetooth.UnifiedBluetoothManager;
-import com.makeblock.appinventor.Bluetooth.UnifiedBluetoothAdapter;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 /**
  * Created by tom on 16/12/6.
@@ -51,6 +43,10 @@ public class MakeblockBase extends AndroidNonvisibleComponent
     private boolean isConnected = false;
     private int connectRSSI = -30;  //default borderline for Bluetooth automatic connecting
     protected static BluetoothFlowValve bluetoothFlowValve = new BluetoothFlowValve();
+
+    private QueryDataThread queryLightnessThread;
+    private QueryDataThread queryLineFollowThread;
+    private QueryDataThread queryUltrasonicThread;
 
     protected final String logTag;
 
@@ -197,5 +193,79 @@ public class MakeblockBase extends AndroidNonvisibleComponent
         }
         customToast = Toast.makeText(activity, message, Toast.LENGTH_SHORT);
         customToast.show();
+    }
+
+    void startReadingSensors(BluetoothFlowValve bluetoothFlowValve, Command command, int index) {
+        switch (index) {
+            case DEVICE_LIGHTNESS:
+                if (queryLightnessThread == null) {
+                    queryLightnessThread = new QueryDataThread(bluetoothFlowValve, command);
+                    queryLightnessThread.start();
+                }
+                break;
+            case DEVICE_ULTRASONIC:
+                if (queryUltrasonicThread == null) {
+                    queryUltrasonicThread = new QueryDataThread(bluetoothFlowValve, command);
+                    queryUltrasonicThread.start();
+                }
+                break;
+            case DEVICE_LINE_FOLLOWER:
+                if (queryLineFollowThread == null) {
+                    queryLineFollowThread = new QueryDataThread(bluetoothFlowValve, command);
+                    queryLineFollowThread.start();
+                }
+                break;
+        }
+    }
+
+    void stopReadingSensors(int index) {
+        switch (index) {
+            case DEVICE_LIGHTNESS:
+                if (queryLightnessThread != null) {
+                    queryLightnessThread.stopQuery();
+                    queryLightnessThread = null;
+                }
+                break;
+            case DEVICE_ULTRASONIC:
+                if (queryUltrasonicThread != null) {
+                    queryUltrasonicThread.stopQuery();
+                    queryUltrasonicThread = null;
+                }
+                break;
+            case DEVICE_LINE_FOLLOWER:
+                if (queryLineFollowThread != null) {
+                    queryLineFollowThread.stopQuery();
+                    queryLineFollowThread = null;
+                }
+                break;
+        }
+    }
+
+    private class QueryDataThread extends Thread {
+
+        private BluetoothFlowValve bluetoothFlowValve;
+        private Command command;
+        private boolean running = true;
+
+        QueryDataThread(BluetoothFlowValve bluetoothFlowValve, Command command) {
+            this.bluetoothFlowValve = bluetoothFlowValve;
+            this.command = command;
+        }
+
+        public void stopQuery() {
+            running = false;
+        }
+
+        @Override
+        public void run() {
+            while (running) {
+                bluetoothFlowValve.pushCommand(command);
+                try {
+                    sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }

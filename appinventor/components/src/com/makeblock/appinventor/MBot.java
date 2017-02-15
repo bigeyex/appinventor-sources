@@ -12,15 +12,6 @@ import com.google.appinventor.components.annotations.SimpleFunction;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.common.ComponentCategory;
 import com.google.appinventor.components.runtime.*;
-import com.makeblock.appinventor.Bluetooth.BluetoothAdapter_BLE;
-import com.makeblock.appinventor.Bluetooth.BluetoothFlowValve;
-import com.makeblock.appinventor.Bluetooth.bluetoothManager;
-import com.makeblock.appinventor.Bluetooth.Command;
-import com.makeblock.appinventor.Bluetooth.DeviceBean;
-import com.makeblock.appinventor.Bluetooth.PackDataHelper;
-import com.makeblock.appinventor.Bluetooth.SearchEvent;
-import com.makeblock.appinventor.Bluetooth.UnifiedBluetoothManager;
-import com.makeblock.appinventor.Bluetooth.UnifiedBluetoothAdapter;
 
 import java.io.IOException;
 
@@ -123,19 +114,34 @@ public class MBot extends MBotBase {
         setBuzzer("PlayNote", frequency, duration);
     }
 
-    @SimpleFunction(description = "query ultrasonic sensor value")
-    public void QueryUltrasonicSensorValue(int port) throws IOException {
+    @SimpleFunction(description = "read ultrasonic sensor value")
+    public void ReadUltrasonicSensorValue(int port) throws IOException {
         ultrasonicSensorValue("QueryUltrasonicSensorValue", port);
     }
 
-    @SimpleFunction(description = "query get lightness sensor value")
-    public void QueryLightnessSensorValue() throws IOException {
+    @SimpleFunction(description = "read lightness sensor value")
+    public void ReadLightnessSensorValue() throws IOException {
         lightnessSensorValue("QueryLightnessSensorValue");
     }
 
-    @SimpleFunction(description = "query get linefollower value")
-    public void QueryLineFollowerValue(int port) throws IOException {
+    @SimpleFunction(description = "read linefollower sensor value")
+    public void ReadLineFollowerValue(int port) throws IOException {
         lineFollowerStatus("QueryLineFollowerValue", port);
+    }
+
+    @SimpleFunction(description = "stop reading ultrasonic sensor value")
+    public void StopReadingUltrasonicValue(int port) throws IOException {
+        stopReadingSensors(DEVICE_ULTRASONIC);
+    }
+
+    @SimpleFunction(description = "stop reading lightness sensor value")
+    public void StopReadingLightnessValue() throws IOException {
+        stopReadingSensors(DEVICE_LIGHTNESS);
+    }
+
+    @SimpleFunction(description = "stop reading linefollower sensor value")
+    public void StopReadingLineFollowerValue(int port) throws IOException {
+        stopReadingSensors(DEVICE_LINE_FOLLOWER);
     }
 
     @SimpleEvent(description = "get ultrasonic sensor value")
@@ -153,4 +159,6 @@ public class MBot extends MBotBase {
     public void ReceiveLineFollowerValue(String value) {
         EventDispatcher.dispatchEvent(MBot.this, "ReceiveLineFollowerValue", value);
     }
+
+
 }

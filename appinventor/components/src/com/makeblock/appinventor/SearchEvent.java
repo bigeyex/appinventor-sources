@@ -1,4 +1,4 @@
-package com.google.appinventor.components.runtime.Bluetooth;
+package com.makeblock.appinventor;
 
 /**
  * Created by liaoyuhao on 2016/4/25.

@@ -10,15 +10,6 @@ import android.util.Log;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.UsesPermissions;
 import com.google.appinventor.components.runtime.ComponentContainer;
-import com.makeblock.appinventor.Bluetooth.BluetoothAdapter_BLE;
-import com.makeblock.appinventor.Bluetooth.BluetoothFlowValve;
-import com.makeblock.appinventor.Bluetooth.bluetoothManager;
-import com.makeblock.appinventor.Bluetooth.Command;
-import com.makeblock.appinventor.Bluetooth.DeviceBean;
-import com.makeblock.appinventor.Bluetooth.PackDataHelper;
-import com.makeblock.appinventor.Bluetooth.SearchEvent;
-import com.makeblock.appinventor.Bluetooth.UnifiedBluetoothManager;
-import com.makeblock.appinventor.Bluetooth.UnifiedBluetoothAdapter;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -147,7 +138,7 @@ public class MBotBase extends MakeblockBase {
 
         Log.w("mbot", "send" + byteArrayToHex(bytesToWrite));
 
-        bluetoothFlowValve.pushCommand(new Command(bytesToWrite));
+        startReadingSensors(bluetoothFlowValve, new Command(bytesToWrite), deviceType);
     }
 
     public final float extractFloat(byte[] replyBytes) {
