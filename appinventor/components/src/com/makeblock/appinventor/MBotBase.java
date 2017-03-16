@@ -50,6 +50,7 @@ public class MBotBase extends MakeblockBase {
     private static final int DEVICE_DCMOTOR = 10;
     private static final int DEVICE_RGBLED = 8;
     private static final int DEVICE_BUZZER = 34;
+    private static final int DEVICE_9G_SERVO = 35;
 
     protected static final int PORT_LEFT_MOTOR = 9;
     protected static final int PORT_RIGHT_MOTOR = 10;
@@ -166,6 +167,12 @@ public class MBotBase extends MakeblockBase {
         byte beatHigh = (byte) ((beat >> 8) & 0xff);
         byte beatLow = (byte) (beat & 0xff);
         sendWriteCommand(functionName, DEVICE_BUZZER, new byte[]{pitchLow, pitchHigh, beatLow, beatHigh});
+    }
+
+    protected final void set9gServo(String functionName, int port, int slot, int degrees) {
+        //ugly code... just for now.
+        byte[] commandBytes = new byte[]{PREFIX_A, PREFIX_B, (byte) 0x06, (byte) 0x00, (byte) 0x02, (byte) 0x0b, (byte) port, (byte) slot, (byte) degrees};
+        bluetoothFlowValve.pushCommand(new Command(commandBytes));
     }
 
     protected final void ultrasonicSensorValue(String functionName, int port) throws IOException {

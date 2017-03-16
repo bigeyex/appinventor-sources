@@ -3,8 +3,10 @@ package com.makeblock.appinventor;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.appinventor.components.annotations.SimpleEvent;
 import com.google.appinventor.components.annotations.SimpleFunction;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.UsesPermissions;
@@ -12,6 +14,7 @@ import com.google.appinventor.components.runtime.AndroidNonvisibleComponent;
 import com.google.appinventor.components.runtime.Component;
 import com.google.appinventor.components.runtime.ComponentContainer;
 import com.google.appinventor.components.runtime.Deleteable;
+import com.google.appinventor.components.runtime.EventDispatcher;
 import com.google.appinventor.components.runtime.util.ErrorMessages;
 
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ public class MakeblockBase extends AndroidNonvisibleComponent
     private Toast customToast;
     private Handler handler = new Handler();
     private boolean isConnected = false;
-    private int connectRSSI = -30;  //default borderline for Bluetooth automatic connecting
+    private int connectRSSI = -45;  //default borderline for Bluetooth automatic connecting
     protected static BluetoothFlowValve bluetoothFlowValve = new BluetoothFlowValve();
 
     private QueryDataThread queryLightnessThread;
@@ -58,6 +61,7 @@ public class MakeblockBase extends AndroidNonvisibleComponent
             } else if (bluetoothManager.getConnectedDevice() != null) {
                 showToast("Device " + bluetoothManager.getConnectedDevice().bluetoothDevice.getAddress() + " is connected.");
                 isConnected = true;
+                Connected();
             } else {
                 connect();
             }
@@ -83,8 +87,8 @@ public class MakeblockBase extends AndroidNonvisibleComponent
     @SimpleFunction(description = "Connect to your robot's Bluetooth.")
     public void ConnectToRobot() {
         if (isConnected) {
-            showToast("Device already connected. Please disconnect first.");
-            return;
+            //Suggested by Wang Yu, disconnect robot when the user try to connect again.
+            DisconnectRobot();
         }
         openBluetooth();
         bluetoothManager.init(activity);
@@ -114,6 +118,12 @@ public class MakeblockBase extends AndroidNonvisibleComponent
             "NO LOWER THAN -80, or your robot's Bluetooth address could not be found by the adapter.)")
     public void SetConnectRSSI(int connectRSSI) {
         this.connectRSSI = connectRSSI;
+    }
+
+    @SimpleEvent(description = "mBot is connected")
+    public void Connected() {
+        Log.e("wbp", "connected event");
+        EventDispatcher.dispatchEvent(this, "Connected");
     }
 
     protected final boolean isBluetoothConnected(String functionName) {

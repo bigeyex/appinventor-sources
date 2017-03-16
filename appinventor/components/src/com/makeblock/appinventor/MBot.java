@@ -41,14 +41,12 @@ public class MBot extends MBotBase {
                     @Override
                     public void run() {
                         //组包
-                        Log.e("wbp", "新代码");
                         byte[] data = PackDataHelper.packData(dataReceived);
                         if (data == null) {
                             return;
                         }
                         String convertedValue = String.valueOf(extractFloat(data));
                         int indexReceived = data[2] & 0xff;
-                        Log.e("wbp", "Converted Value" + convertedValue + ":::" + indexReceived);
                         switch (indexReceived) {
                             case DEVICE_ULTRASONIC:
                                 ReceiveUltrasonicValue(convertedValue);
@@ -112,6 +110,11 @@ public class MBot extends MBotBase {
     @SimpleFunction(description = "play note at a certain frequency (C4:262)")
     public void PlayNote(int frequency, int duration) {
         setBuzzer("PlayNote", frequency, duration);
+    }
+
+    @SimpleFunction(description = "set 9g servo to a certain degrees")
+    public void Set9gServo(int port, int slot, int degrees) {
+        set9gServo("Set9gServo", port, slot, degrees);
     }
 
     @SimpleFunction(description = "read ultrasonic sensor value")
