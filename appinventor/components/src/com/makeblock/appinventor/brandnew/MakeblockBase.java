@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.appinventor.components.annotations.SimpleEvent;
 import com.google.appinventor.components.annotations.SimpleFunction;
 import com.google.appinventor.components.annotations.SimpleObject;
 import com.google.appinventor.components.annotations.UsesPermissions;
@@ -13,6 +14,7 @@ import com.google.appinventor.components.runtime.AndroidNonvisibleComponent;
 import com.google.appinventor.components.runtime.Component;
 import com.google.appinventor.components.runtime.ComponentContainer;
 import com.google.appinventor.components.runtime.Deleteable;
+import com.google.appinventor.components.runtime.EventDispatcher;
 import com.google.appinventor.components.runtime.Form;
 
 import java.util.ArrayList;
@@ -114,6 +116,11 @@ public class MakeblockBase extends AndroidNonvisibleComponent implements Compone
         this.CONNECT_RSSI = CONNECT_RSSI;
     }
 
+    @SimpleEvent(description = "When your device successfully connected to the robot, this method will be called.")
+    public void ConnectedToRobot() {
+        EventDispatcher.dispatchEvent(MakeblockBase.this, "ConnectedToRobot");
+    }
+
     private void openBluetooth() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (!bluetoothAdapter.isEnabled()) {
@@ -184,9 +191,10 @@ public class MakeblockBase extends AndroidNonvisibleComponent implements Compone
             showToast("Device disconnected");
         } else if (device instanceof UnKnowDevice) {
             //unsupported device
-        } else if (!(device instanceof UnKnowDevice)){
+        } else {
             //supported device
             showToast("Device " + device.getDeviceName() + " connected");
+            ConnectedToRobot();
         }
     }
 

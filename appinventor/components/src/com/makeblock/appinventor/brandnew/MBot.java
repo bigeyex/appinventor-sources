@@ -50,31 +50,31 @@ public class MBot extends MakeblockBase {
 
     @SimpleFunction(description = "tell mBot to move forward in a specified speed(-255 ~ 255)")
     public void MoveForward(int speed) {
-        Action action = RJ25ActionFactory.createJoystickAction(-speed / 255, speed / 255);
+        Action action = RJ25ActionFactory.createJoystickAction((short) -speed, (short) speed);
         actionExecutor.executeAction(action);
     }
 
     @SimpleFunction(description = "tell mBot to move backward in a specified speed(-255 ~ 255)")
     public void MoveBackward(int speed) {
-        Action action = RJ25ActionFactory.createJoystickAction(speed / 255, -speed / 255);
+        Action action = RJ25ActionFactory.createJoystickAction((short) speed, (short) -speed);
         actionExecutor.executeAction(action);
     }
 
     @SimpleFunction(description = "tell mBot to turn left in a specified speed(-255 ~ 255)")
     public void TurnLeft(int speed) {
-        Action action = RJ25ActionFactory.createJoystickAction(speed / 255, speed / 255);
+        Action action = RJ25ActionFactory.createJoystickAction((short) speed, (short) speed);
         actionExecutor.executeAction(action);
     }
 
     @SimpleFunction(description = "tell mBot to turn right in a specified speed(-255 ~ 255)")
     public void TurnRight(int speed) {
-        Action action = RJ25ActionFactory.createJoystickAction(-speed / 255, -speed / 255);
+        Action action = RJ25ActionFactory.createJoystickAction((short) -speed, (short) -speed);
         actionExecutor.executeAction(action);
     }
 
     @SimpleFunction(description = "tell mBot to stop moving")
     public void StopMoving() {
-        Action action = RJ25ActionFactory.createJoystickAction(0, 0);
+        Action action = RJ25ActionFactory.createJoystickAction((short) 0, (short) 0);
         actionExecutor.executeAction(action);
     }
 

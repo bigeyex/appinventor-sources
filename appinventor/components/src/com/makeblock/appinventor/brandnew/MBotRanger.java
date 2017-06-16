@@ -60,39 +60,51 @@ public class MBotRanger extends MakeblockBase {
         actionExecutor.executeAction(action);
     }
 
-    @SimpleFunction(description = "")
+    @SimpleFunction(description = "reset on board encoder motor position to zero")
     public void setEncoderMotorOnBoardResetPosition(int slot) {
         Action action = RJ25ActionFactory.createOnBoardEncoderMotorPositionResetAction(slot);
         actionExecutor.executeAction(action);
     }
 
+    @SimpleFunction(description = "set encoder motor rotate a certain degree with a specific speed(0 ~ 180)")
+    public void setEncoderMotorRotateAtSpeed(int slot, int speed, int angle) {
+        Action action = RJ25ActionFactory.createEncoderMotorRotateAngleAction(slot, speed, angle);
+        actionExecutor.executeAction(action);
+    }
+
+    @SimpleFunction(description = "set stepper motor rotate a certain distance with a certain speed")
+    public void setStepperMotor(int port, int speed, int step) {
+        Action action = RJ25ActionFactory.createStepMotorAction(port, (short) speed, step);
+        actionExecutor.executeAction(action);
+    }
+
     @SimpleFunction(description = "tell Ranger to move forward in a specified speed(-255 ~ 255)")
     public void MoveForward(int speed) {
-        Action action = RJ25ActionFactory.createJoystickAction(-speed / 255, speed / 255);
+        Action action = RJ25ActionFactory.createJoystickAction((short) -speed, (short) speed);
         actionExecutor.executeAction(action);
     }
 
     @SimpleFunction(description = "tell Ranger to move backward in a specified speed(-255 ~ 255)")
     public void MoveBackward(int speed) {
-        Action action = RJ25ActionFactory.createJoystickAction(speed / 255, -speed / 255);
+        Action action = RJ25ActionFactory.createJoystickAction((short) speed, (short) -speed);
         actionExecutor.executeAction(action);
     }
 
     @SimpleFunction(description = "tell Ranger to turn left in a specified speed(-255 ~ 255)")
     public void TurnLeft(int speed) {
-        Action action = RJ25ActionFactory.createJoystickAction(speed / 255, speed / 255);
+        Action action = RJ25ActionFactory.createJoystickAction((short) speed, (short) speed);
         actionExecutor.executeAction(action);
     }
 
     @SimpleFunction(description = "tell Ranger to turn right in a specified speed(-255 ~ 255)")
     public void TurnRight(int speed) {
-        Action action = RJ25ActionFactory.createJoystickAction(-speed / 255, -speed / 255);
+        Action action = RJ25ActionFactory.createJoystickAction((short) -speed, (short) -speed);
         actionExecutor.executeAction(action);
     }
 
     @SimpleFunction(description = "tell Ranger to stop moving")
     public void StopMoving() {
-        Action action = RJ25ActionFactory.createJoystickAction(0, 0);
+        Action action = RJ25ActionFactory.createJoystickAction((short) 0, (short) 0);
         actionExecutor.executeAction(action);
     }
 
@@ -111,6 +123,12 @@ public class MBotRanger extends MakeblockBase {
     @SimpleFunction(description = "set 9g servo move to a specified angle")
     public void set9gServoMove(int port, int slot, int angle) {
         Action action = RJ25ActionFactory.create9gServoAction(port, slot, angle);
+        actionExecutor.executeAction(action);
+    }
+
+    @SimpleFunction(description = "set digital servo move to a specified angle(0 ~ 180)")
+    public void setDigitalServoMove(int port, int slot, int angle) {
+        Action action = RJ25ActionFactory.createDigitalServoAction(port, slot, angle);
         actionExecutor.executeAction(action);
     }
 

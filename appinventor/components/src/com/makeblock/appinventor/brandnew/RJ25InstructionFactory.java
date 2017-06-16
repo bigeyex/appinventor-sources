@@ -142,4 +142,12 @@ public class RJ25InstructionFactory {
     public static Instruction createOnBoardEncoderMotorPositionResetInstruction(byte slot) {
         return new OnBoardEncoderMotorPositionResetInstruction(slot);
     }
+
+    public static Instruction createEncoderMotorRotateAngleInstruction(byte slot, short speed, float angle) {
+        return new EncoderMotor(slot, speed, angle);
+    }
+
+    public static Instruction createStepMotorInstruction(byte port, short speed, int step) {
+        return new StepMotorInstruction(port, speed, step);
+    }
 }

@@ -45,7 +45,9 @@ public abstract class RJ25Instruction extends Instruction {
     public static final byte INDEX_FACE = 0x33;
     public static final byte INDEX_9G_SERVO = 0x34;
     public static final byte INDEX_MINI_FAN = 0x35;
-    public static final byte INDEX_ENCODER_MOTOR = 0x36;
+    public static final byte INDEX_ON_BOARD_ENCODER_MOTOR = 0x36;
+    public static final byte INDEX_ENCODER_MOTOR = 0x37;
+    public static final byte INDEX_STEP_MOTOR = 0x38;
 
     //mode
     protected static final byte MODE_WRITE = 0x2;

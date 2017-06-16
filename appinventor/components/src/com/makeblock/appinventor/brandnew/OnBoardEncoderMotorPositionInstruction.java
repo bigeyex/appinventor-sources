@@ -25,7 +25,7 @@ public class OnBoardEncoderMotorPositionInstruction extends RJ25Instruction {
     @Override
     public byte[] getBytes() {
         ByteBuffer byteBuffer = getByteBuffer(length);
-        byteBuffer.put(INDEX_ENCODER_MOTOR);
+        byteBuffer.put(INDEX_ON_BOARD_ENCODER_MOTOR);
         byteBuffer.put(MODE_WRITE);
         byteBuffer.put(DEVICE_INSTRUCTION);
         byteBuffer.put(subCommand);

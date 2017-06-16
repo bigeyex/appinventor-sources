@@ -38,8 +38,8 @@ public class RJ25ActionFactory {
     public static final short MAX_SPEED_JOYSTICK = 255;
     public static final short MAX_SPEED_SPRINT = 255;
 
-    public static Action createJoystickAction(float speed1, float speed2) {
-        Instruction instruction = RJ25InstructionFactory.createJoystickInstruction((short) Math.round(speed1 * MAX_SPEED_JOYSTICK), (short) Math.round(speed2 * MAX_SPEED_JOYSTICK));
+    public static Action createJoystickAction(short speed1, short speed2) {
+        Instruction instruction = RJ25InstructionFactory.createJoystickInstruction(speed1, speed2);
         return createSingleAction(ACTION_MOTOR, Action.DURATION_IMMEDIATELY, instruction, null, null);
     }
 
@@ -151,6 +151,14 @@ public class RJ25ActionFactory {
 
     public static Action createEncoderMotorAction(int port, int slot, int speed) {
         return new SingleAction(ACTION_MOTOR, 0, RJ25InstructionFactory.createEncoderMotorInstruction((byte) port, (byte) slot, (short) speed), null, null);
+    }
+
+    public static Action createEncoderMotorRotateAngleAction(int slot, int speed, float angle) {
+        return new SingleAction(ACTION_MOTOR, 0, RJ25InstructionFactory.createEncoderMotorRotateAngleInstruction((byte) slot, (short) speed, angle), null, null);
+    }
+
+    public static Action createStepMotorAction(int port, short speed, int step) {
+        return new SingleAction(ACTION_MOTOR, 0, RJ25InstructionFactory.createStepMotorInstruction((byte) port, speed, step), null, null);
     }
 
     public static Action createOnBoardEncoderMotorPositionAction(int slot, long position, int speed) {

@@ -66,6 +66,18 @@ public class Starter extends MakeblockBase {
         actionExecutor.executeAction(action);
     }
 
+    @SimpleFunction(description = "set encoder motor rotate a certain degree with a specific speed(0 ~ 180)")
+    public void setEncoderMotorRotateAtSpeed(int slot, int speed, int angle) {
+        Action action = RJ25ActionFactory.createEncoderMotorRotateAngleAction(slot, speed, angle);
+        actionExecutor.executeAction(action);
+    }
+
+    @SimpleFunction(description = "set stepper motor rotate a certain distance with a certain speed")
+    public void setStepperMotor(int port, int speed, int step) {
+        Action action = RJ25ActionFactory.createStepMotorAction(port, (short) speed, step);
+        actionExecutor.executeAction(action);
+    }
+
     @SimpleFunction(description = "set mini-fan action, 1 for clockwise rotate, 0 for anticlockwise rotate")
     public void setMiniFanAction(int port, int action) {
         Action miniFanAction = RJ25ActionFactory.createMiniFanAction(port, action);
